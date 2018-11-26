@@ -9,21 +9,28 @@ server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(express.static(__dirname + '/public'))
 
-let userRoutes = require('./server/auth/routes')
-server.use('/account', userRoutes)
-//^^ above always the same
-
-let productRoutes = require('./server/routes/products')
+//DONT REORDER THIS 
+let auth = require('./server/auth/routes')
+server.use(auth.session)
+server.use('/account', auth.router)
 
 //Allow users to get data when not logged in
 server.use("*", (req, res, next) => {
   if (req.method == "GET") {
     return next()
   }
-  next(new Error("Please login to continue"))
-  // make sure user is logged in and
-  // has permission to create or delete or edit products
+  if (!req.session.uid) {
+    return next(new Error("Please login to continue"))
+  }
+  if (req.method == "POST") {
+    req.body.creatorId = req.session.uid
+  }
+  next()
 })
+//^^ above always the same
+
+let productRoutes = require('./server/routes/products')
+
 
 
 server.use('/api/products', productRoutes)

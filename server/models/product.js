@@ -7,7 +7,8 @@ let schema = new Schema({
   description: { type: String, required: true },
   price: { type: Number, required: true },
   img: { type: String },
-  type: { type: String, enum: ["Book", "Video", "Food", "General"], default: "General" }
+  type: { type: String, enum: ["Book", "Video", "Food", "General"], default: "General" },
+  //creatorId: { type: ObjectId, ref: "User", required: true } MARK TALK ABOUT ME!!!! :)
 })
 
 let model = mongoose.model(name, schema)
