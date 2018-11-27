@@ -30,10 +30,14 @@ server.use("*", (req, res, next) => {
 //^^ above always the same
 
 let productRoutes = require('./server/routes/products')
+let reviewRoutes = require('./server/routes/reviews')
+let wishlistRoutes = require('./server/routes/wishlists')
 
 
 
 server.use('/api/products', productRoutes)
+server.use('/api/reviews', reviewRoutes)
+server.use('/api/wishlist', wishlistRoutes)
 
 //default error handler
 server.use('*', (error, req, res, next) => {

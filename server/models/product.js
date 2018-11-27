@@ -1,5 +1,6 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
+let ObjectId = Schema.Types.ObjectId
 let name = "Product"
 
 let schema = new Schema({
@@ -8,7 +9,7 @@ let schema = new Schema({
   price: { type: Number, required: true },
   img: { type: String },
   type: { type: String, enum: ["Book", "Video", "Food", "General"], default: "General" },
-  //creatorId: { type: ObjectId, ref: "User", required: true } MARK TALK ABOUT ME!!!! :)
+  creatorId: { type: ObjectId, ref: "User", required: true }
 })
 
 let model = mongoose.model(name, schema)
