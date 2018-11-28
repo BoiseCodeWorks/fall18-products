@@ -37,7 +37,7 @@ router.post('/', (req, res, next) => {
 
 //delete a product
 router.delete('/:id', (req, res, next) => {
-  Products.findByIdAndDelete(req.params.id)
+  Products.findOneAndUpdate({ _id: req.params.id, creatorId: req.session.uid }, { description: 'No longer Available', price: 0, img: 'http://placehold.it/200x200' })
     .then(product => res.send({ message: "DELORTED", data: product }))
     .catch(next)
 })

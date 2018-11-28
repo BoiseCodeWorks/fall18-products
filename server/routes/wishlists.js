@@ -6,8 +6,12 @@ let Users = require('../models/user')
 //get wishlist by id
 router.get('/:id', (req, res, next) => {
   Wishlists.findById(req.params.id)
-    .then(wishlist => res.send(wishlist))
-    .catch(next)
+    .populate('products').exec((err, fullWishlist) => {
+      if (err) {
+        return next(err)
+      }
+      res.send(fullWishlist)
+    })
 })
 
 ///post/create a new wishlist
@@ -36,12 +40,49 @@ router.delete('/:id', (req, res, next) => {
 })
 
 //update/modify an existing wishlist
-router.put('/:id', (req, res, next) => {
-  //Validates is creator before updating
-  Wishlists.findOneAndUpdate({ _id: req.params.id, creatorId: req.session.uid }, { new: true })
-    .then(wishlist => res.send(wishlist))
+// router.put('/:id', (req, res, next) => {
+//   //Validates is creator before updating
+//   Wishlists.findOneAndUpdate({ _id: req.params.id, creatorId: req.session.uid }, req.body, { new: true })
+//     .then(wishlist => res.send(wishlist))
+//     .catch(next)
+// })
+
+//add item to wishlist
+router.put('/:id/addProduct', (req, res, next) => {
+  Wishlists.findById(req.params.id)
+    .then(wishlist => {
+      wishlist.products.push(req.body.productId)
+      wishlist.save(() => {
+        res.send(wishlist)
+      })
+    })
     .catch(next)
 })
+
+
+//remove item from wishlist
+router.put('/:id/removeProduct', (req, res, next) => {
+  Wishlists.findById(req.params.id)
+    .then(wishlist => {
+      let productIndex = wishlist.products.indexOf(req.body.productId)
+      if (productIndex > -1) {
+        wishlist.products.splice(productIndex, 1)
+      }
+      wishlist.save(() => {
+        res.send(wishlist)
+      })
+    })
+    .catch(next)
+})
+
+
+
+
+
+
+
+
+
 
 
 // How you might allow for a non creator to edit

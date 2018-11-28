@@ -12,6 +12,13 @@ let schema = new Schema({
   creatorId: { type: ObjectId, ref: "User", required: true }
 })
 
+
+schema.pre('remove', () => {
+
+})
+
+
+
 let model = mongoose.model(name, schema)
 
 module.exports = model
